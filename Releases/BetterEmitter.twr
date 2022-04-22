@@ -1,0 +1,49 @@
+{
+  "BuildInfo":{
+    "TypeWriter":{
+      "Name":"TypeWriter",
+      "Version":"4.0.0",
+      "Licence":"MIT"
+    },
+    "Date":"Fri Apr 22 19:40:55 2022"
+  },
+  "Package":{
+    "Description":"A better emitter",
+    "Author":{
+      "Developers":["CoreByte"],
+      "Contributors":[]
+    },
+    "Contact":{
+      "Socials":[],
+      "Website":"",
+      "Source":"https://github.com/SinisterRectus/Discordia/blob/master/libs/utils/Emitter.lua"
+    },
+    "Dependencies":{
+      "Dua":[],
+      "Git":[],
+      "Luvit":[]
+    },
+    "Entrypoints":{
+      "Main":"ga.corebyte.BetterEmitter.Test"
+    },
+    "ID":"BetterEmitter",
+    "Name":"BetterEmitter",
+    "Version":"1.0.0",
+    "InfoVersion":1
+  },
+  "Code":{
+    "ga.corebyte.BetterEmitter.Main":{
+      "Code":"print(\"Hello World!\")",
+      "Type":"Code"
+    },
+    "ga.corebyte.BetterEmitter.Emitter":{
+      "Code":"--[=[\r\n@c Emitter\r\n@t ui\r\n@mt mem\r\n@d Implements an asynchronous event emitter where callbacks can be subscribed to\r\nspecific named events. When events are emitted, the callbacks are called in the\r\norder that they were originally registered.\r\n]=]\r\n\r\nlocal timer = require('timer')\r\n\r\nlocal wrap, yield = coroutine.wrap, coroutine.yield\r\nlocal resume, running = coroutine.resume, coroutine.running\r\nlocal insert, remove = table.insert, table.remove\r\nlocal setTimeout, clearTimeout = timer.setTimeout, timer.clearTimeout\r\n\r\nlocal Emitter = Class:extend()\r\n\r\nfunction Emitter:initialize()\r\n\tself._listeners = {}\r\nend\r\n\r\nlocal function new(self, name, listener)\r\n\tlocal listeners = self._listeners[name]\r\n\tif not listeners then\r\n\t\tlisteners = {}\r\n\t\tself._listeners[name] = listeners\r\n\tend\r\n\tinsert(listeners, listener)\r\n\treturn listener.fn\r\nend\r\n\r\n--[=[\r\n@m on\r\n@p name string\r\n@p fn function\r\n@r function\r\n@d Subscribes a callback to be called every time the named event is emitted.\r\nCallbacks registered with this method will automatically be wrapped as a new\r\ncoroutine when they are called. Returns the original callback for convenience.\r\n]=]\r\nfunction Emitter:on(name, fn)\r\n\treturn new(self, name, {fn = fn})\r\nend\r\n\r\n--[=[\r\n@m once\r\n@p name string\r\n@p fn function\r\n@r function\r\n@d Subscribes a callback to be called only the first time this event is emitted.\r\nCallbacks registered with this method will automatically be wrapped as a new\r\ncoroutine when they are called. Returns the original callback for convenience.\r\n]=]\r\nfunction Emitter:once(name, fn)\r\n\treturn new(self, name, {fn = fn, once = true})\r\nend\r\n\r\n--[=[\r\n@m onSync\r\n@p name string\r\n@p fn function\r\n@r function\r\n@d Subscribes a callback to be called every time the named event is emitted.\r\nCallbacks registered with this method are not automatically wrapped as a\r\ncoroutine. Returns the original callback for convenience.\r\n]=]\r\nfunction Emitter:onSync(name, fn)\r\n\treturn new(self, name, {fn = fn, sync = true})\r\nend\r\n\r\n--[=[\r\n@m onceSync\r\n@p name string\r\n@p fn function\r\n@r function\r\n@d Subscribes a callback to be called only the first time this event is emitted.\r\nCallbacks registered with this method are not automatically wrapped as a coroutine.\r\nReturns the original callback for convenience.\r\n]=]\r\nfunction Emitter:onceSync(name, fn)\r\n\treturn new(self, name, {fn = fn, once = true, sync = true})\r\nend\r\n\r\n--[=[\r\n@m emit\r\n@p name string\r\n@op ... *\r\n@r nil\r\n@d Emits the named event and a variable number of arguments to pass to the event callbacks.\r\n]=]\r\nfunction Emitter:emit(name, ...)\r\n\tlocal listeners = self._listeners[name]\r\n\tif not listeners then return end\r\n\tfor i = 1, #listeners do\r\n\t\tlocal listener = listeners[i]\r\n\t\tif listener then\r\n\t\t\tlocal fn = listener.fn\r\n\t\t\tif listener.once then\r\n\t\t\t\tlisteners[i] = false\r\n\t\t\tend\r\n\t\t\tif listener.sync then\r\n\t\t\t\tfn(...)\r\n\t\t\telse\r\n\t\t\t\twrap(fn)(...)\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\n\tif listeners._removed then\r\n\t\tfor i = #listeners, 1, -1 do\r\n\t\t\tif not listeners[i] then\r\n\t\t\t\tremove(listeners, i)\r\n\t\t\tend\r\n\t\tend\r\n\t\tif #listeners == 0 then\r\n\t\t\tself._listeners[name] = nil\r\n\t\tend\r\n\t\tlisteners._removed = nil\r\n\tend\r\nend\r\n\r\n--[=[\r\n@m getListeners\r\n@p name string\r\n@r function\r\n@d Returns an iterator for all callbacks registered to the named event.\r\n]=]\r\nfunction Emitter:getListeners(name)\r\n\tlocal listeners = self._listeners[name]\r\n\tif not listeners then return function() end end\r\n\tlocal i = 0\r\n\treturn function()\r\n\t\twhile i < #listeners do\r\n\t\t\ti = i + 1\r\n\t\t\tif listeners[i] then\r\n\t\t\t\treturn listeners[i].fn\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\nend\r\n\r\n--[=[\r\n@m getListenerCount\r\n@p name string\r\n@r number\r\n@d Returns the number of callbacks registered to the named event.\r\n]=]\r\nfunction Emitter:getListenerCount(name)\r\n\tlocal listeners = self._listeners[name]\r\n\tif not listeners then return 0 end\r\n\tlocal n = 0\r\n\tfor _, listener in ipairs(listeners) do\r\n\t\tif listener then\r\n\t\t\tn = n + 1\r\n\t\tend\r\n\tend\r\n\treturn n\r\nend\r\n\r\n--[=[\r\n@m removeListener\r\n@p name string\r\n@p fn function\r\n@r nil\r\n@d Unregisters all instances of the callback from the named event.\r\n]=]\r\nfunction Emitter:removeListener(name, fn)\r\n\tlocal listeners = self._listeners[name]\r\n\tif not listeners then return end\r\n\tfor i, listener in ipairs(listeners) do\r\n\t\tif listener and listener.fn == fn then\r\n\t\t\tlisteners[i] = false\r\n\t\tend\r\n\tend\r\n\tlisteners._removed = true\r\nend\r\n\r\n--[=[\r\n@m removeAllListeners\r\n@p name string/nil\r\n@r nil\r\n@d Unregisters all callbacks for the emitter. If a name is passed, then only\r\ncallbacks for that specific event are unregistered.\r\n]=]\r\nfunction Emitter:removeAllListeners(name)\r\n\tif name then\r\n\t\tself._listeners[name] = nil\r\n\telse\r\n\t\tfor k in pairs(self._listeners) do\r\n\t\t\tself._listeners[k] = nil\r\n\t\tend\r\n\tend\r\nend\r\n\r\n--[=[\r\n@m waitFor\r\n@p name string\r\n@op timeout number\r\n@op predicate function\r\n@r boolean\r\n@r ...\r\n@d When called inside of a coroutine, this will yield the coroutine until the\r\nnamed event is emitted. If a timeout (in milliseconds) is provided, the function\r\nwill return after the time expires, regardless of whether the event is emitted,\r\nand `false` will be returned; otherwise, `true` is returned. If a predicate is\r\nprovided, events that do not pass the predicate will be ignored.\r\n]=]\r\nfunction Emitter:waitFor(name, timeout, predicate)\r\n\tlocal thread = running()\r\n\tlocal fn\r\n\tfn = self:onSync(name, function(...)\r\n\t\tif predicate and not predicate(...) then return end\r\n\t\tif timeout then\r\n\t\t\tclearTimeout(timeout)\r\n\t\tend\r\n\t\tself:removeListener(name, fn)\r\n\t\treturn assert(resume(thread, true, ...))\r\n\tend)\r\n\ttimeout = timeout and setTimeout(timeout, function()\r\n\t\tself:removeListener(name, fn)\r\n\t\treturn assert(resume(thread, false))\r\n\tend)\r\n\treturn yield()\r\nend\r\n\r\nreturn Emitter",
+      "Type":"Code"
+    },
+    "ga.corebyte.BetterEmitter":{
+      "Type":"Redirect",
+      "RedirectTo":"ga.corebyte.BetterEmitter.Main"
+    }
+  },
+  "Resources":[]
+}
