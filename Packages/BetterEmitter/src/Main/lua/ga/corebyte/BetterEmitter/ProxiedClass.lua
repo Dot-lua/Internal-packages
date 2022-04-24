@@ -3,11 +3,18 @@ local Emitter = Class:extend()
 local InternalEmitter = Import("ga.corebyte.BetterEmitter.Internal.Emitter")
 
 function Emitter:initialize()
-    self.InternalEmitter = InternalEmitter()
+    CheckInit(self)
+end
+
+local function CheckInit(self)
+    if self.InternalEmitter == nil then
+        self.InternalEmitter = InternalEmitter()
+    end
 end
 
 --#region Emit functions
 function Emitter:Emit(Name, ...)
+    CheckInit(self)
     return self.InternalEmitter:emit(Name, ...)
 end
 
@@ -26,6 +33,7 @@ end
 
 --#region GetListenerCount functions
 function Emitter:GetListenerCount(Name)
+    CheckInit(self)
     return self.InternalEmitter:getListenerCount(Name)
 end
 
@@ -36,6 +44,7 @@ end
 
 --#region GetListeners functions
 function Emitter:GetListeners(Name)
+    CheckInit(self)
     return self.InternalEmitter:getListeners(Name)
 end
 
@@ -46,6 +55,7 @@ end
 
 --#region On functions
 function Emitter:On(Name, Fn)
+    CheckInit(self)
     return self.InternalEmitter:on(Name, Fn)
 end
 
@@ -56,6 +66,7 @@ end
 
 --#region OnSync functions
 function Emitter:OnSync(Name, Fn)
+    CheckInit(self)
     return self.InternalEmitter:onSync(Name, Fn)
 end
 
@@ -66,6 +77,7 @@ end
 
 --#region Once functions
 function Emitter:Once(Name, Fn)
+    CheckInit(self)
     return self.InternalEmitter:once(Name, Fn)
 end
 
@@ -76,6 +88,7 @@ end
 
 --#region OnceSync functions
 function Emitter:OnceSync(Name, Fn)
+    CheckInit(self)
     return self.InternalEmitter:onceSync(Name, Fn)
 end
 
@@ -86,6 +99,7 @@ end
 
 --#region RemoveAllListeners functions
 function Emitter:RemoveAllListeners(Name)
+    CheckInit(self)
     return self.InternalEmitter:removeAllListeners(Name)
 end
 
@@ -96,6 +110,7 @@ end
 
 --#region RemoveListener functions
 function Emitter:RemoveListener(Name, Fn)
+    CheckInit(self)
     return self.InternalEmitter:removeListener(Name, Fn)
 end
 
@@ -104,8 +119,9 @@ function Emitter:removeListener(Name, Fn)
 end
 --#endregion
 
---#region
+--#region WaitFor functions
 function Emitter:WaitFor(Name, Timeout, Predicate)
+    CheckInit(self)
     return self.InternalEmitter:waitFor(Name, Timeout, Predicate)
 end
 

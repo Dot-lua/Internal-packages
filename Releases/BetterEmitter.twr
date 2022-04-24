@@ -1,35 +1,35 @@
 {
   "BuildInfo":{
-    "Date":"Sun Apr 24 16:05:43 2022",
+    "Date":"Sun Apr 24 16:43:09 2022",
     "TypeWriter":{
+      "Licence":"MIT",
       "Name":"TypeWriter",
-      "Version":"4.0.0",
-      "Licence":"MIT"
+      "Version":"4.0.0"
     }
   },
   "Package":{
+    "Description":"A better emitter",
+    "ID":"BetterEmitter",
+    "Dependencies":{
+      "Git":[],
+      "Luvit":[],
+      "Dua":[]
+    },
+    "Author":{
+      "Developers":["CoreByte","SinisterRectus"],
+      "Contributors":[]
+    },
     "Contact":{
+      "Source":"https://github.com/SinisterRectus/Discordia/blob/master/libs/utils/Emitter.lua",
       "Socials":[],
-      "Website":"",
-      "Source":"https://github.com/SinisterRectus/Discordia/blob/master/libs/utils/Emitter.lua"
+      "Website":""
     },
     "Name":"BetterEmitter",
-    "ID":"BetterEmitter",
+    "Version":"1.0.0",
     "Entrypoints":{
       "Main":"ga.corebyte.BetterEmitter.Test"
     },
-    "Description":"A better emitter",
-    "Version":"1.0.0",
-    "Author":{
-      "Contributors":[],
-      "Developers":["CoreByte","SinisterRectus"]
-    },
-    "InfoVersion":1,
-    "Dependencies":{
-      "Luvit":[],
-      "Dua":[],
-      "Git":[]
-    }
+    "InfoVersion":1
   },
   "Code":{
     "ga.corebyte.BetterEmitter.Internal.Class":{
@@ -37,15 +37,11 @@
       "Type":"Code"
     },
     "ga.corebyte.BetterEmitter":{
-      "Type":"Redirect",
-      "RedirectTo":"ga.corebyte.BetterEmitter.Main"
+      "RedirectTo":"ga.corebyte.BetterEmitter.Main",
+      "Type":"Redirect"
     },
     "ga.corebyte.BetterEmitter.Test":{
       "Code":"local Emitter = Import(\"ga.corebyte.BetterEmitter\"):new()\r\n\r\nEmitter:on(\r\n    \"test\",\r\n    function(data)\r\n        print(\"test event fired with data: \" .. data)\r\n    end\r\n)\r\n\r\nEmitter:emit(\"test\", \"hello world\")",
-      "Type":"Code"
-    },
-    "ga.corebyte.BetterEmitter.ProxiedClass":{
-      "Code":"local Emitter = Class:extend()\r\n\r\nlocal InternalEmitter = Import(\"ga.corebyte.BetterEmitter.Internal.Emitter\")\r\n\r\nfunction Emitter:initialize()\r\n    self.InternalEmitter = InternalEmitter()\r\nend\r\n\r\n--#region Emit functions\r\nfunction Emitter:Emit(Name, ...)\r\n    return self.InternalEmitter:emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:emit(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:Fire(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:fire(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n--#endregion\r\n\r\n--#region GetListenerCount functions\r\nfunction Emitter:GetListenerCount(Name)\r\n    return self.InternalEmitter:getListenerCount(Name)\r\nend\r\n\r\nfunction Emitter:getListenerCount(Name)\r\n    return self:GetListenerCount(Name)\r\nend\r\n--#endregion\r\n\r\n--#region GetListeners functions\r\nfunction Emitter:GetListeners(Name)\r\n    return self.InternalEmitter:getListeners(Name)\r\nend\r\n\r\nfunction Emitter:getListeners(Name)\r\n    return self:GetListeners(Name)\r\nend\r\n--#endregion\r\n\r\n--#region On functions\r\nfunction Emitter:On(Name, Fn)\r\n    return self.InternalEmitter:on(Name, Fn)\r\nend\r\n\r\nfunction Emitter:on(Name, Fn)\r\n    return self:On(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region OnSync functions\r\nfunction Emitter:OnSync(Name, Fn)\r\n    return self.InternalEmitter:onSync(Name, Fn)\r\nend\r\n\r\nfunction Emitter:onSync(Name, Fn)\r\n    return self:OnSync(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region Once functions\r\nfunction Emitter:Once(Name, Fn)\r\n    return self.InternalEmitter:once(Name, Fn)\r\nend\r\n\r\nfunction Emitter:once(Name, Fn)\r\n    return self:Once(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region OnceSync functions\r\nfunction Emitter:OnceSync(Name, Fn)\r\n    return self.InternalEmitter:onceSync(Name, Fn)\r\nend\r\n\r\nfunction Emitter:onceSync(Name, Fn)\r\n    return self:OnceSync(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region RemoveAllListeners functions\r\nfunction Emitter:RemoveAllListeners(Name)\r\n    return self.InternalEmitter:removeAllListeners(Name)\r\nend\r\n\r\nfunction Emitter:removeAllListeners(Name)\r\n    return self:RemoveAllListeners(Name)\r\nend\r\n--#endregion\r\n\r\n--#region RemoveListener functions\r\nfunction Emitter:RemoveListener(Name, Fn)\r\n    return self.InternalEmitter:removeListener(Name, Fn)\r\nend\r\n\r\nfunction Emitter:removeListener(Name, Fn)\r\n    return self:RemoveListener(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region\r\nfunction Emitter:WaitFor(Name, Timeout, Predicate)\r\n    return self.InternalEmitter:waitFor(Name, Timeout, Predicate)\r\nend\r\n\r\nfunction Emitter:waitFor(Name, Timeout, Predicate)\r\n    return self:WaitFor(Name, Timeout, Predicate)\r\nend\r\n--#endregion\r\n\r\nreturn Emitter",
       "Type":"Code"
     },
     "ga.corebyte.BetterEmitter.Internal.Emitter":{
@@ -54,6 +50,10 @@
     },
     "ga.corebyte.BetterEmitter.Main":{
       "Code":"return Import(\"ga.corebyte.BetterEmitter.ProxiedClass\")",
+      "Type":"Code"
+    },
+    "ga.corebyte.BetterEmitter.ProxiedClass":{
+      "Code":"local Emitter = Class:extend()\r\n\r\nlocal InternalEmitter = Import(\"ga.corebyte.BetterEmitter.Internal.Emitter\")\r\n\r\nfunction Emitter:initialize()\r\n    CheckInit(self)\r\nend\r\n\r\nlocal function CheckInit(self)\r\n    if self.InternalEmitter == nil then\r\n        self.InternalEmitter = InternalEmitter()\r\n    end\r\nend\r\n\r\n--#region Emit functions\r\nfunction Emitter:Emit(Name, ...)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:emit(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:Fire(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n\r\nfunction Emitter:fire(Name, ...)\r\n    return self:Emit(Name, ...)\r\nend\r\n--#endregion\r\n\r\n--#region GetListenerCount functions\r\nfunction Emitter:GetListenerCount(Name)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:getListenerCount(Name)\r\nend\r\n\r\nfunction Emitter:getListenerCount(Name)\r\n    return self:GetListenerCount(Name)\r\nend\r\n--#endregion\r\n\r\n--#region GetListeners functions\r\nfunction Emitter:GetListeners(Name)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:getListeners(Name)\r\nend\r\n\r\nfunction Emitter:getListeners(Name)\r\n    return self:GetListeners(Name)\r\nend\r\n--#endregion\r\n\r\n--#region On functions\r\nfunction Emitter:On(Name, Fn)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:on(Name, Fn)\r\nend\r\n\r\nfunction Emitter:on(Name, Fn)\r\n    return self:On(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region OnSync functions\r\nfunction Emitter:OnSync(Name, Fn)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:onSync(Name, Fn)\r\nend\r\n\r\nfunction Emitter:onSync(Name, Fn)\r\n    return self:OnSync(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region Once functions\r\nfunction Emitter:Once(Name, Fn)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:once(Name, Fn)\r\nend\r\n\r\nfunction Emitter:once(Name, Fn)\r\n    return self:Once(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region OnceSync functions\r\nfunction Emitter:OnceSync(Name, Fn)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:onceSync(Name, Fn)\r\nend\r\n\r\nfunction Emitter:onceSync(Name, Fn)\r\n    return self:OnceSync(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region RemoveAllListeners functions\r\nfunction Emitter:RemoveAllListeners(Name)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:removeAllListeners(Name)\r\nend\r\n\r\nfunction Emitter:removeAllListeners(Name)\r\n    return self:RemoveAllListeners(Name)\r\nend\r\n--#endregion\r\n\r\n--#region RemoveListener functions\r\nfunction Emitter:RemoveListener(Name, Fn)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:removeListener(Name, Fn)\r\nend\r\n\r\nfunction Emitter:removeListener(Name, Fn)\r\n    return self:RemoveListener(Name, Fn)\r\nend\r\n--#endregion\r\n\r\n--#region WaitFor functions\r\nfunction Emitter:WaitFor(Name, Timeout, Predicate)\r\n    CheckInit(self)\r\n    return self.InternalEmitter:waitFor(Name, Timeout, Predicate)\r\nend\r\n\r\nfunction Emitter:waitFor(Name, Timeout, Predicate)\r\n    return self:WaitFor(Name, Timeout, Predicate)\r\nend\r\n--#endregion\r\n\r\nreturn Emitter",
       "Type":"Code"
     }
   },
