@@ -1,1 +1,1 @@
-return Import("ga.corebyte.BetterEmitter.Emitter")
+return Import("ga.corebyte.BetterEmitter.ProxiedClass")

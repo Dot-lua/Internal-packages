@@ -14,9 +14,9 @@ local resume, running = coroutine.resume, coroutine.running
 local insert, remove = table.insert, table.remove
 local setTimeout, clearTimeout = timer.setTimeout, timer.clearTimeout
 
-local Emitter = Class:extend()
+local Emitter = Import("ga.corebyte.BetterEmitter.Internal.Class")('Emitter')
 
-function Emitter:initialize()
+function Emitter:__init()
 	self._listeners = {}
 end
 

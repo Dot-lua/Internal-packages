@@ -9,7 +9,8 @@ return { InfoVersion = 1, -- Dont touch this
 
     Author = {
         Developers = {
-            "CoreByte"
+            "CoreByte",
+            "SinisterRectus",
         },
         Contributors = {}
     },
