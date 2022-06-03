@@ -2,5 +2,9 @@
     {
         "Url": "https://raw.githubusercontent.com/Dot-lua/Internal-packages/main/Releases/BetterEmitter.twr",
         "Name": "BetterEmitter.twr"
+    },
+    {
+        "Url": "https://raw.githubusercontent.com/Dot-lua/Internal-packages/main/Releases/Config.twr",
+        "Name": "Config.twr"
     }
 ]
