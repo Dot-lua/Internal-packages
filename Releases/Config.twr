@@ -1,0 +1,53 @@
+{
+  "BuildInfo":{
+    "Date":"Fri Jun  3 21:19:04 2022",
+    "TypeWriter":{
+      "Name":"TypeWriter",
+      "Version":"4.5.2",
+      "Licence":"MIT"
+    }
+  },
+  "Package":{
+    "Author":{
+      "Contributors":[],
+      "Developers":["CoreByte"]
+    },
+    "Entrypoints":{
+      "Main":"ga.corebyte.Config.Test"
+    },
+    "Name":"Config",
+    "Version":"1.0.0",
+    "ID":"Config",
+    "InfoVersion":1,
+    "Description":"Simple Config",
+    "Dependencies":{
+      "Git":[],
+      "Luvit":[],
+      "Dua":[]
+    },
+    "Contact":{
+      "Website":"https://cubic-inc.ga",
+      "Socials":[],
+      "Source":"https://github.com/Dot-lua/TypeWriter/"
+    }
+  },
+  "Code":{
+    "ga.corebyte.Config.ConfigClass":{
+      "Code":"local Config = Object:extend()\r\nlocal FS = require(\"fs\")\r\nlocal Json = require(\"json\")\r\n\r\nfunction Config:initialize(Path)\r\n    self.Options = {}\r\n    self.Path = Path\r\n    self.Order = {}\r\nend\r\n\r\nfunction Config:Read()\r\n    local ParsedData = {}\r\n    local RawData = FS.readFileSync(self.Path)\r\n    local Lines = RawData:split(\"\\n\")\r\n    for Index, Line in pairs(Lines) do\r\n        local SplitLine = Line:split(\"=\")\r\n        local Key = SplitLine[1]\r\n        local Value = table.concat(SplitLine, \"=\", 2)\r\n\r\n        local Num = tonumber(Value)\r\n        if Num then\r\n            Value = Num\r\n        elseif Value == \"true\" then\r\n            Value = true\r\n        elseif Value == \"false\" then\r\n            Value = false\r\n        end\r\n        ParsedData[Key] = Value\r\n    end\r\n    return ParsedData\r\nend\r\n\r\nfunction Config:Write(ConfigData)\r\n    local Data = \"\"\r\n    for Index, Key in pairs(self.Order) do\r\n        if type(Key) == \"table\" then\r\n            if Key.IsEmpty then\r\n                Data = Data .. \"\\n\"\r\n            end\r\n        else\r\n            Data = Data .. Key .. \"=\" .. tostring(ConfigData[Key]) .. \"\\n\"\r\n        end\r\n    end\r\n    FS.writeFileSync(self.Path, Data)\r\nend\r\n\r\nfunction Config:Parse()\r\n    if not FS.existsSync(self.Path) then\r\n        FS.writeFileSync(self.Path, \"\")\r\n    end\r\n\r\n    local ConfigData = self:Read()\r\n    local WriteBack = false\r\n    for Key, Value in pairs(ConfigData) do\r\n        if not self.Options[Key] then\r\n            ConfigData[Key] = nil\r\n            WriteBack = true\r\n        end\r\n    end\r\n    for Key, Option in pairs(self.Options) do\r\n        if not ConfigData[Key] then\r\n            ConfigData[Key] = Option.Default\r\n            WriteBack = true\r\n        end\r\n    end\r\n    if WriteBack then\r\n        self:Write(ConfigData)\r\n    end\r\n    self.Data = ConfigData\r\n    return self\r\nend\r\n\r\nfunction Config:AddOption(Key, Default)\r\n    table.insert(self.Order, Key)\r\n    self.Options[Key] = {\r\n        Key = Key,\r\n        Default = Default\r\n    }\r\n    return self\r\nend\r\n\r\nfunction Config:AddLine()\r\n    table.insert(self.Order, { IsEmpty = true })\r\n    return self\r\nend\r\n\r\nfunction Config:GetOption(Key)\r\n    if self.Data == nil then\r\n        self:Parse()\r\n    end\r\n    return self.Data[Key]\r\nend\r\n\r\nfunction Config:SetOption(Key, Value)\r\n    self.Data[Key] = Value\r\n    self:Write(self.Data)\r\nend\r\n\r\nreturn Config",
+      "Type":"Code"
+    },
+    "ga.corebyte.Config":{
+      "Type":"Redirect",
+      "RedirectTo":"ga.corebyte.Config.Main"
+    },
+    "ga.corebyte.Config.Test":{
+      "Code":"print(\"hi\")\r\n\r\nlocal Config = Import(\"ga.corebyte.Config\"):new(\"./a\"):AddOption(\"abc\", \"def\"):Parse()",
+      "Type":"Code"
+    },
+    "ga.corebyte.Config.Main":{
+      "Code":"return Import(\"ga.corebyte.Config.ConfigClass\")",
+      "Type":"Code"
+    }
+  },
+  "Resources":[]
+}
