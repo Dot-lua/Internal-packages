@@ -1,6 +1,6 @@
 # Config
 
-Load it: `TypeWriter.Runtime.LoadInternal("BetterEmitter")`
+Load it: `TypeWriter.Runtime.LoadInternal("Config")`
 
 ## Config:new(Path)
 Load the Class with the Path
