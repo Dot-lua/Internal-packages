@@ -7,4 +7,13 @@ Emitter:on(
     end
 )
 
+Emitter:OnAny(
+    function(...)
+        p(...)
+    end,
+    function(Name)
+        return Name ~= 'test'
+    end
+)
+
 Emitter:emit("test", "hello world")
