@@ -2,14 +2,17 @@ local Emitter = Class:extend()
 
 local InternalEmitter = Import("ga.corebyte.BetterEmitter.Internal.Emitter")
 
-function Emitter:initialize()
-    CheckInit(self)
-end
-
 local function CheckInit(self)
     if self.InternalEmitter == nil then
         self.InternalEmitter = InternalEmitter()
     end
+    if self.OnAnyListeners == nil then
+        self.OnAnyListeners = {}
+    end
+end
+
+function Emitter:initialize()
+    CheckInit(self)
 end
 
 --#region Emit functions
