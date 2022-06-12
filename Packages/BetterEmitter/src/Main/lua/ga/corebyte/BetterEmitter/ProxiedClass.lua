@@ -18,6 +18,11 @@ end
 --#region Emit functions
 function Emitter:Emit(Name, ...)
     CheckInit(self)
+    for Index, Listener in pairs(self.OnAnyListeners) do
+        if Listener.Predicate(Name, ...) then
+            Listener.Fn(Name, ...)
+        end
+    end
     return self.InternalEmitter:emit(Name, ...)
 end
 
@@ -64,6 +69,27 @@ end
 
 function Emitter:on(Name, Fn)
     return self:On(Name, Fn)
+end
+--#endregion
+
+--#region OnAny
+function Emitter:OnAny(Fn, Predicate)
+    CheckInit(self)
+
+    if Predicate == nil then
+        Predicate = function(...) return true end
+    end
+    table.insert(
+        self.OnAnyListeners,
+        {
+            Predicate = Predicate,
+            Fn = Fn
+        }
+    )
+end
+
+function Emitter:onAny(Fn, Predicate)
+    return self:OnAny(Fn, Predicate)
 end
 --#endregion
 
