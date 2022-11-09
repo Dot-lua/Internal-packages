@@ -17,10 +17,7 @@ function Config:Read()
         local Key = SplitLine[1]
         local Value = table.concat(SplitLine, "=", 2)
 
-        local Num = tonumber(Value)
-        if Num then
-            Value = Num
-        elseif Value == "true" then
+        if Value == "true" then
             Value = true
         elseif Value == "false" then
             Value = false
