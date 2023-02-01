@@ -49,13 +49,13 @@ function Config:Parse()
     local ConfigData = self:Read()
     local WriteBack = false
     for Key, Value in pairs(ConfigData) do
-        if not self.Options[Key] then
+        if self.Options[Key] == nil then
             ConfigData[Key] = nil
             WriteBack = true
         end
     end
     for Key, Option in pairs(self.Options) do
-        if not ConfigData[Key] then
+        if ConfigData[Key] == nil then
             ConfigData[Key] = Option.Default
             WriteBack = true
         end
